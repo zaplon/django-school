@@ -1,0 +1,14 @@
+version: '3'
+services:
+  web:
+    image: django_school
+    ports:
+     - "8000:8000"
+    volumes:
+     - ./:/app
+    links:
+     - db
+
+  db:
+    image: postgres
+  
