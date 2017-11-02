@@ -19,3 +19,17 @@ class Employee(models.Model):
     class Meta:
         verbose_name = _('Employee')
     user = models.OneToOneField(User)
+
+
+class Group(models.Model):
+    class Meta:
+        verbose_name = _('Group')
+    name = models.CharField(max_length=256)
+    description = models.CharField(max_length=256)
+    students = models.ManyToManyField(Student, related_name='groups')
+
+
+class School(models.Model):
+    class Meta:
+        verbose_name = _('School')
+    name = models.CharField(max_length=256)
