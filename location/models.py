@@ -5,6 +5,8 @@ LOCATION_TYPES = (('classroom', _('Classroom')), ('gym', _('Gym')))
 
 
 class Place(models.Model):
+    class Meta:
+        abstract = True
     name = models.CharField(max_length=256, verbose_name=_('name'))
     description = models.CharField(max_length=1024, verbose_name=_('description'))
 

@@ -1,6 +1,16 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+from timetable.models import Card
+from rest_framework import serializers, viewsets
 
-from django.shortcuts import render
 
-# Create your views here.
+class CardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Card
+        fields = '__all__'
+
+
+class CardViewSet(viewsets.ModelViewSet):
+    queryset = Card.objects.all()
+    serializer_class = CardSerializer
+    filter_fields = ('students', 'teachers')
+

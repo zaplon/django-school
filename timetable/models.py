@@ -24,7 +24,7 @@ class Presence(models.Model):
     class Meta:
         verbose_name = _('Presence')
     lesson = models.ForeignKey(Lesson, related_name='presences')
-    status = models.CharField(choices=PRESENCE_TYPES, verbose_name=_('status'))
+    status = models.CharField(choices=PRESENCE_TYPES, verbose_name=_('status'), max_length=16)
 
 
 class StudentPresence(Presence):
@@ -58,14 +58,21 @@ class TimetableVersion(models.Model):
     parent = models.ForeignKey(Timetable, related_name=_('versions'))
 
     def create_cards(self):
-        pass
+        subjects = Subject.objects.all()
+        records = []
+        for s in subjects:
+            for i in range(0, s.per_week):
+                records.append(Card(duration=s.duration, timetable_version=self))
+        cards = Card.objects.bulk_create(records)
+        for c in cards:
+            c.students.set(s.students)
+            c.teachers.set(s.teachers)
 
 
-class Term(models.Model):
-    datetime = models.DateTimeField(verbose_name=_('date'))
-    card = models.ForeignKey(Card, related_name='terms')
-    lesson = models.OneToOneField(Lesson, blank=True, verbose_name=_('lesson'))
-    duration = models.IntegerField(default=45, verbose_name=_('duration'))
+@receiver(post_save, sender=TimetableVersion)
+def create_version(sender, instance, created, **kwargs):
+    if created:
+        instance.create_cards()
 
 
 class Card(models.Model):
@@ -76,3 +83,13 @@ class Card(models.Model):
     day_of_week = models.IntegerField(verbose_name=_('day of week'), blank=True, null=True)
     time = models.TimeField(verbose_name=_('hour'), blank=True, null=True)
     duration = models.IntegerField(default=45, verbose_name=_('duration'))
+    timetable_version = models.ForeignKey(TimetableVersion, related_name='cards')
+
+
+class Term(models.Model):
+    datetime = models.DateTimeField(verbose_name=_('date'))
+    card = models.ForeignKey(Card, related_name='terms')
+    lesson = models.OneToOneField(Lesson, blank=True, verbose_name=_('lesson'))
+    duration = models.IntegerField(default=45, verbose_name=_('duration'))
+
+

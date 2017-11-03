@@ -17,10 +17,14 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from rest_framework import routers
 from location.views import LocationViewSet
+from subject.views import SubjectViewSet
+from timetable.views import CardViewSet
 
 
 router = routers.DefaultRouter()
-router.register(r'icd', LocationViewSet)
+router.register(r'locations', LocationViewSet)
+router.register(r'subjects', SubjectViewSet)
+router.register(r'cards', CardViewSet)
 
 
 urlpatterns = [

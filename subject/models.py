@@ -15,25 +15,27 @@ class SubjectTemplate(models.Model):
     duration = models.IntegerField(default=45, verbose_name=_('duration'))
 
 
-class Subject(SubjectTemplate):
-    class Meta:
-        verbose_name = _('Subject')
-    students = models.ManyToManyField(through=StudentEnrolment, related_name='subjects', verbose_name=_('students'))
-    teachers = models.ManyToManyField(through=TeacherEnrolment, related_name='subjects', verbose_name=_('teachers'))
-
-
 class SubjectEnrolment(models.Model):
     class Meta:
         verbose_name = _('subject enrolment')
         verbose_name_plural = _('subject enrolments')
-    start_date = models.DateTimeField(verbose_name=_('start date'))
-    end_date = models.DateTimeField(verbose_name=_('end date'))
-    subject = models.ForeignKey(Subject, verbose_name=_('subject'))
+    start_date = models.DateField(verbose_name=_('start date'))
+    end_date = models.DateField(verbose_name=_('end date'))
+    subject = models.ForeignKey('Subject', verbose_name=_('subject'))
 
 
-class StudentEnrolment(models.Model):
+class StudentEnrolment(SubjectEnrolment):
     student = models.ForeignKey(Student)
 
 
-class TeacherEnrolment(models.Model):
-    student = models.ForeignKey(Teacher)
+class TeacherEnrolment(SubjectEnrolment):
+    teacher = models.ForeignKey(Teacher)
+
+
+class Subject(SubjectTemplate):
+    class Meta:
+        verbose_name = _('Subject')
+    students = models.ManyToManyField(Student, through=StudentEnrolment, related_name='subjects', verbose_name=_('students'))
+    teachers = models.ManyToManyField(Teacher, through=TeacherEnrolment, related_name='subjects', verbose_name=_('teachers'))
+
+

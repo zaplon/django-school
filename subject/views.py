@@ -1,6 +1,14 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+from subject.models import Subject
+from rest_framework import serializers, viewsets
 
-from django.shortcuts import render
 
-# Create your views here.
+class SubjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subject
+        fields = '__all__'
+
+
+class SubjectViewSet(viewsets.ModelViewSet):
+    queryset = Subject.objects.all()
+    serializer_class = SubjectSerializer
