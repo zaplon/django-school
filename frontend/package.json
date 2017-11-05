@@ -17,6 +17,7 @@
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs"
   },
   "dependencies": {
+    "babel-preset-es2015": "^6.24.1",
     "bootstrap": "4.0.0-beta.2",
     "bootstrap-vue": "1.0.0-beta.9",
     "chart.js": "2.7.0",
@@ -24,6 +25,8 @@
     "simple-line-icons": "^2.4.1",
     "vue": "^2.5.2",
     "vue-chartjs": "^3.0.0",
+    "vue-full-calendar": "^2.1.4",
+    "vue-good-table": "^1.15.2",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {

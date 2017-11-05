@@ -6,8 +6,13 @@ export default {
       icon: 'icon-speedometer'
     },
     {
-      name: 'Calendar',
-      url: '/calendar/'
+      name: 'Timetable',
+      url: '/timetable/',
+      icon: 'icon-calendar'
+    },
+    {
+      name: 'Lessons',
+      url: '/lessons/'
     }
   ]
 }

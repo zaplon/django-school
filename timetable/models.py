@@ -2,8 +2,8 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.db.models.signals import post_save
 from django.utils.translation import ugettext as _
 from account.models import Student, Teacher
 from subject.models import Subject
@@ -44,18 +44,18 @@ class Timetable(models.Model):
     def latest_version(self):
         return self.versions.latest()
 
-
-@receiver(post_save, sender=Timetable)
-def create_version(sender, instance, created, **kwargs):
-    if created:
-        TimetableVersion.objects.create(parent=instance, number=1)
+    def save(self, *args, **kwargs):
+        adding = self._state.adding
+        super(Timetable, self).save(*args, **kwargs)
+        if adding:
+            TimetableVersion.objects.create(parent=self, number=1)
 
 
 class TimetableVersion(models.Model):
     class Meta:
         get_latest_by = 'number'
     number = models.IntegerField()
-    parent = models.ForeignKey(Timetable, related_name=_('versions'))
+    parent = models.ForeignKey(Timetable, related_name='versions')
 
     def create_cards(self):
         subjects = Subject.objects.all()
@@ -63,16 +63,17 @@ class TimetableVersion(models.Model):
         for s in subjects:
             for i in range(0, s.per_week):
                 records.append(Card(duration=s.duration, timetable_version=self))
-        cards = Card.objects.bulk_create(records)
+        Card.objects.bulk_create(records)
+        cards = Card.objects.filter(timetable_version=self).order_by('id')
         for c in cards:
-            c.students.set(s.students)
-            c.teachers.set(s.teachers)
+            c.students.set(s.students.all())
+            c.teachers.set(s.teachers.all())
 
-
-@receiver(post_save, sender=TimetableVersion)
-def create_version(sender, instance, created, **kwargs):
-    if created:
-        instance.create_cards()
+    def save(self, *args, **kwargs):
+        adding = self._state.adding
+        super(TimetableVersion, self).save(*args, **kwargs)
+        if adding:
+            self.create_cards()
 
 
 class Card(models.Model):

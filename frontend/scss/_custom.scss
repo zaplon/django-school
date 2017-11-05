@@ -1,1 +1,17 @@
 // Here you can add other styles
+
+.nav-table {
+  flex: 0 0 200px;
+  border-right: 1px solid #e3e8ec;
+}
+
+.nav-card {
+  display: flex;
+  flex-direction: row;
+  background: #fff;
+  border: 1px solid #e3e8ec;
+}
+
+.nav-main {
+  padding: 1rem;
+}

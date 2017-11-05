@@ -1,7 +1,7 @@
 version: '2'
 services:
   web:
-    image: python:3 # django_school
+    image: django_school
     working_dir: /app/
     ports:
      - "8000:8000"
@@ -14,11 +14,11 @@ services:
   node:
     image: "node"
     user: "node"
-    working_dir: /app/frontend/
+    working_dir: /app/
     environment:
       - NODE_ENV=development
     volumes:
-      - ./:/app/
+      - ./frontend/:/app/
     ports:
       - "8080:8080"
     command: "npm start"
